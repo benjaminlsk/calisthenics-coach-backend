@@ -1,12 +1,12 @@
-FROM node:20-alpine AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npx ng build
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+COPY src ./src
+RUN mvn clean package -DskipTests -q
 
-FROM node:20-alpine
+FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=build /app/dist ./dist
-EXPOSE 4000
-CMD ["node", "dist/calisthenics-coach-ui/server/server.mjs"]
+COPY --from=build /app/target/calisthenics-coach-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
