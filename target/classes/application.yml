@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update          # 'validate' en production
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+
+# Clé API Anthropic — à mettre dans les variables d'environnement
+anthropic:
+  api:
+    key: ${ANTHROPIC_API_KEY}
+    url: https://api.anthropic.com/v1/messages
+    model: claude-sonnet-4-6
+    max-tokens: 2048
+    version: "2023-06-01"
+
+# CORS — autorise le front Angular en dev
+cors:
+  allowed-origins:
+    - http://localhost:4200
+
+logging:
+  level:
+    com.coach: DEBUG
+    org.springframework.web: INFO
